@@ -1,65 +1,165 @@
-import Image from "next/image";
+'use client'
+import { useState, useEffect } from 'react'
+import styles from './page.module.css'
+import AuthForm from './components/AuthForm'
 
-export default function Home() {
+function GameContent() {
+  const [position, setPosition] = useState(0)
+  const [clawPosition, setClawPosition] = useState(0)
+  const [isDropping, setIsDropping] = useState(false)
+  const [hasPrize, setHasPrize] = useState(false)
+  const [credits, setCredits] = useState(5)
+
+  const prizes = [
+    { id: 1, name: 'Teddy Bear', caught: false },
+    { id: 2, name: 'Toy Car', caught: false },
+    { id: 3, name: 'Ball', caught: false }
+  ]
+
+  const moveLeft = () => {
+    if (position > 0 && !isDropping) {
+      setPosition(position - 10)
+    }
+  }
+
+  const moveRight = () => {
+    if (position < 100 && !isDropping) {
+      setPosition(position + 10)
+    }
+  }
+
+  const dropClaw = () => {
+    if (!isDropping && credits > 0) {
+      setCredits(credits - 1)
+      setIsDropping(true)
+      
+      // Animate claw drop
+      setTimeout(() => {
+        setClawPosition(100)
+        
+        // Check for prize (50% chance)
+        const gotPrize = Math.random() > 0.5
+        setHasPrize(gotPrize)
+        
+        // Return claw
+        setTimeout(() => {
+          setClawPosition(0)
+          setIsDropping(false)
+          if (gotPrize) {
+            // Mark prize as caught
+            const updatedPrizes = [...prizes]
+            const randomPrizeIndex = Math.floor(Math.random() * prizes.length)
+            updatedPrizes[randomPrizeIndex].caught = true
+          }
+        }, 1000)
+      }, 1000)
+    }
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <h1 className={styles.title}>Claw Machine Game</h1>
+      <div className={styles.machine}>
+        <div className={styles.clawRail} style={{ left: `${position}%` }}>
+          <div 
+            className={styles.claw} 
+            style={{ bottom: `${clawPosition}%` }}
+          >
+            {hasPrize && <div className={styles.prize}>🎁</div>}
+          </div>
+        </div>
+        
+        <div className={styles.prizeArea}>
+          {prizes.map(prize => (
+            <div 
+              key={prize.id}
+              className={`${styles.prizeItem} ${prize.caught ? styles.caught : ''}`}
+            >
+              {prize.name}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.controls}>
+        <p>Credits: {credits}</p>
+        <button className={styles.controlButton} onClick={moveLeft} disabled={isDropping}>← Move Left</button>
+        <button className={styles.controlButton} onClick={moveRight} disabled={isDropping}>→ Move Right</button>
+        <button className={styles.controlButton} onClick={dropClaw} disabled={isDropping || credits <= 0}>
+          Drop Claw
+        </button>
+      </div>
+    </>
+  )
+}
+
+export default function ClawMachine() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
+  const [registrationSuccess, setRegistrationSuccess] = useState(false)
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem('isLoggedIn')
+    if (loggedIn) {
+      setIsLoggedIn(true)
+    }
+  }, [])
+
+  const handleLoginSuccess = () => {
+    localStorage.setItem('isLoggedIn', 'true')
+    setIsLoggedIn(true)
+    setShowRegister(false)
+  }
+
+  const handleRegisterSuccess = () => {
+    // Show success message after registration
+    setRegistrationSuccess(true)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn')
+    setIsLoggedIn(false)
+  }
+
+  if (!isLoggedIn) {
+    return showRegister ? (
+      <div className={styles.container}>
+        {registrationSuccess ? (
+          <div className={styles.successMessage}>
+            <h1 className={styles.title}>Registration Successful!</h1>
+            <p>Your registration is successful, please refresh this page to return to the login page.</p>
+            <button
+              className={styles.controlButton}
+              onClick={() => window.location.reload()}
+            >
+              Refresh Page
+            </button>
+          </div>
+        ) : (
+          <AuthForm mode="register" onSuccess={handleRegisterSuccess} />
+        )}
+      </div>
+    ) : (
+      <div className={styles.container}>
+        <AuthForm
+          mode="login"
+          onSuccess={handleLoginSuccess}
+          onSwitchToRegister={() => setShowRegister(true)}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.container}>
+      <button 
+        className={styles.controlButton}
+        onClick={handleLogout}
+        style={{ position: 'absolute', top: 20, right: 20 }}
+      >
+        Logout
+      </button>
+      <GameContent />
     </div>
-  );
+  )
 }

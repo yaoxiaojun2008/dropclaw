@@ -1,0 +1,196 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.title {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.machine {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  background-color: #ff5252;
+  border: 10px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.clawRail {
+  position: absolute;
+  top: 20px;
+  width: 50px;
+  height: 20px;
+  background-color: #333;
+  transition: left 0.2s ease;
+}
+
+.claw {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: #666;
+  border-radius: 50% 50% 0 0;
+  left: 10px;
+  transition: bottom 0.5s ease;
+}
+
+.claw:after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  background-color: #666;
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+}
+
+.prize {
+  position: absolute;
+  bottom: -20px;
+  left: 5px;
+  font-size: 20px;
+}
+
+.prizeArea {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.prizeItem {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  margin: 5px;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.prizeItem.caught {
+  opacity: 0.3;
+}
+
+.controls {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.controlButton {
+  padding: 0.5rem 1rem;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.controlButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 300px;
+}
+
+.authForm input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.authOptions {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.authOptions p {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.switchAuth {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.switchAuth p {
+  margin-bottom: 0.5rem;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.linkButton:hover {
+  color: #004499;
+}
+
+.successMessage {
+  text-align: center;
+  padding: 2rem;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 400px;
+}
+
+.successMessage h1 {
+  color: #155724;
+  margin-bottom: 1rem;
+}
+
+.successMessage p {
+  color: #155724;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
