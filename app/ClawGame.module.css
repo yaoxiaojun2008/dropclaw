@@ -1,0 +1,191 @@
+/* app/ClawGame.module.css */
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  font-family: "Microsoft YaHei", sans-serif;
+}
+
+.machineContainer {
+  background-color: #F2EFE4;
+  border: 4px solid #8B5A2B;
+  border-radius: 15px;
+  width: 450px;
+  padding: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* Decorative screws */
+.machineContainer::before, .machineContainer::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  width: 15px;
+  height: 15px;
+  background-color: #D4C4A8;
+  border-radius: 50%;
+}
+.machineContainer::before { left: 80px; }
+.machineContainer::after { right: 80px; }
+
+.header {
+  text-align: center;
+  color: #8B5A2B;
+  margin-bottom: 15px;
+}
+.header h1 { margin: 0; font-size: 28px; }
+.header p { margin: 5px 0 0 0; font-size: 14px; color: #A08060; }
+
+/* Game Window */
+.gameWindow {
+  background-color: #F9F9F5;
+  border: 3px solid #A0A0A0;
+  border-radius: 8px;
+  height: 350px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- CLAW STYLES --- */
+.clawAssembly {
+  position: absolute;
+  top: 10px;
+  width: 60px;
+  z-index: 10;
+  filter: drop-shadow(0 0 10px #F4D03F);
+  /* Left is controlled via inline style in React */
+}
+
+.rope {
+  width: 4px;
+  /* height controlled via inline style */
+  background-color: #A08060;
+  margin: 0 auto;
+}
+
+.catPaw {
+  width: 60px;
+  height: 45px;
+  background-color: #F4D03F;
+  border-radius: 30px 30px 10px 10px;
+  position: relative;
+  border: 2px solid #D4AC0D;
+}
+
+.catPaw::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 15px;
+  width: 30px;
+  height: 15px;
+  background-color: #FDEBD0;
+  border-radius: 10px;
+}
+
+.toe {
+  position: absolute;
+  top: -5px;
+  width: 14px;
+  height: 14px;
+  background-color: #F4D03F;
+  border-radius: 50%;
+  border: 2px solid #D4AC0D;
+}
+
+/* --- DOLLS --- */
+.doll {
+  position: absolute;
+  bottom: 20px;
+  transition: opacity 0.3s;
+}
+
+.caught {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Doll Shapes helpers */
+.head {
+  background: #F3CFBC;
+  border-radius: 50%;
+  margin: 0 auto;
+  border: 2px solid #333;
+  position: relative;
+}
+
+/* Specific Doll Styling */
+/* Doll 1: Top Center Pink */
+.d1Head { width: 40px; height: 40px; }
+.d1Head::after {content: '..'; position:absolute; top: 10px; left: 13px; font-weight: bold; color: #333;}
+.d1Body {
+  width: 0; height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 60px solid #D95F69;
+  position: relative;
+}
+.d1Body::before, .d1Body::after {
+  content:''; position:absolute; width: 20px; height: 30px; background: #F4AAB9; border-radius: 50%; top: 10px;
+}
+.d1Body::before { left: -35px; } .d1Body::after { right: -35px; }
+
+/* Doll 2: Blue Soldier */
+.d2Head { width: 45px; height: 45px; }
+.d2Head::before { content:''; position:absolute; top:-5px; left:5px; width:35px; height:15px; background:#333; border-radius: 5px 5px 0 0;}
+.d2Body { width: 60px; height: 70px; background: #505F73; margin: -5px auto 0; border-radius: 5px; position: relative;}
+.d2Body::before, .d2Body::after { content:''; position:absolute; width: 25px; height: 25px; background: #505F73; border-radius: 50%; top: 5px;}
+.d2Body::before { left: -20px; } .d2Body::after { right: -20px; }
+
+/* Doll 3: Small Pink */
+.d3Head { width: 30px; height: 30px; }
+.d3Body { width: 30px; height: 40px; background: #F4AAB9; margin: 0 auto; border-radius: 50% 50% 0 0; position: relative;}
+.d3Body::before, .d3Body::after { content:''; position:absolute; width: 15px; height: 20px; background: #F4AAB9; border-radius: 50%; top: 5px;}
+.d3Body::before { left: -12px; } .d3Body::after { right: -12px; }
+
+/* Doll 4: Green */
+.d4Head { width: 40px; height: 40px; }
+.d4Body { width: 50px; height: 60px; background: #839B8C; margin: -5px auto 0; border-radius: 40% 40% 0 0; position: relative;}
+.d4Body::before, .d4Body::after { content:''; position:absolute; width: 25px; height: 35px; background: #839B8C; border-radius: 50%; top: 10px;}
+.d4Body::before { left: -20px; } .d4Body::after { right: -20px; }
+
+/* Doll 5: Green Triangle */
+.d5Head { width: 35px; height: 35px; }
+.d5Body { width: 0; height: 0; border-left: 25px solid transparent; border-right: 25px solid transparent; border-bottom: 40px solid #6F8779; position: relative;}
+.d5Body::before, .d5Body::after { content:''; position:absolute; width: 20px; height: 20px; background: #6F8779; border-radius: 50%; top: 10px;}
+.d5Body::before { left: -28px; } .d5Body::after { right: -28px; }
+
+/* --- CONTROLS --- */
+.controlPanel {
+  margin-top: 20px;
+  background-color: #E6D5C3;
+  border: 3px dashed #B09070;
+  border-radius: 12px;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.joystickArea { position: relative; width: 60px; height: 60px; }
+.joystickBase { width: 50px; height: 30px; background: #6D4C30; border-radius: 50%; position: absolute; bottom: 0; left: 5px; border: 2px solid #4A3320; }
+.joystickStick { width: 10px; height: 40px; background: #8B5A2B; margin: 0 auto; position: relative; top: -10px; }
+.joystickKnob { width: 25px; height: 25px; background: #D4AC0D; border-radius: 50%; position: absolute; top: -15px; left: -7px; border: 2px solid #B7950B; }
+
+.buttonGroup { display: flex; gap: 20px; text-align: center; font-size: 14px; color: #8B5A2B; font-weight: bold; }
+.gameBtn { width: 50px; height: 50px; border-radius: 50%; border: 3px solid rgba(0,0,0,0.2); cursor: pointer; box-shadow: 0 4px #999; display: block; margin: 0 auto 5px;}
+.gameBtn:active { box-shadow: 0 1px #999; transform: translateY(3px); }
+.btnPink { background-color: #D95F69; }
+.btnGreen { background-color: #6F8779; }
+
+.statusMessage {
+  text-align: center;
+  height: 25px;
+  color: #D95F69;
+  font-weight: bold;
+  margin-top: 5px;
+}
