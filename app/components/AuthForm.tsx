@@ -18,9 +18,15 @@ export default function AuthForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth'
-    const body = mode === 'login' 
+
+    // Use deployed API for production, relative paths for development
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? 'https://dropclaw.vercel.app'
+      : ''
+    const endpoint = mode === 'login'
+      ? `${baseUrl}/api/auth/login`
+      : `${baseUrl}/api/auth`
+    const body = mode === 'login'
       ? { username, password }
       : { username, password, email }
 

@@ -27,13 +27,18 @@ export default function ClawGame() {
   const caughtDollIdRef = useRef<number | null>(null);
 
   // --- React State (For UI rendering) ---
-  const [statusMsg, setStatusMsg] = useState('Use ← → keys to move, Space to grab!');
+  const [statusMsg, setStatusMsg] = useState('Swipe to move, tap to grab!');
   const [caughtDolls, setCaughtDolls] = useState<number[]>([]); // Array of IDs
 
   // Constants
   const MOVE_SPEED = 5;
   const DROP_SPEED = 4;
   const CLAW_START_Y = 10;
+
+  // Touch control state
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const isDragging = useRef(false);
 
   // Initialize
   useEffect(() => {
@@ -58,9 +63,70 @@ export default function ClawGame() {
       }
     };
 
+    // Touch event handlers for game window
+    const handleTouchStart = (e: TouchEvent) => {
+      if (gameStateRef.current !== 'IDLE') return;
+      const touch = e.touches[0];
+      touchStartX.current = touch.clientX;
+      touchStartY.current = touch.clientY;
+      isDragging.current = false;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (gameStateRef.current !== 'IDLE' || !touchStartX.current) return;
+      e.preventDefault();
+
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchStartX.current;
+      const deltaY = Math.abs(touch.clientY - (touchStartY.current || 0));
+
+      // Only handle horizontal movement if it's more horizontal than vertical
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+        isDragging.current = true;
+        const windowWidth = gameWindowRef.current?.offsetWidth || 400;
+        const clawWidth = clawRef.current?.offsetWidth || 60;
+        const moveAmount = deltaX * 0.5; // Sensitivity factor
+
+        clawPos.current.x = Math.max(0, Math.min(windowWidth - clawWidth, clawPos.current.x + moveAmount));
+        updateClawVisuals();
+
+        touchStartX.current = touch.clientX;
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (gameStateRef.current !== 'IDLE') return;
+
+      const touch = e.changedTouches[0];
+      const deltaX = Math.abs((touch.clientX - (touchStartX.current || 0)));
+      const deltaY = Math.abs((touch.clientY - (touchStartY.current || 0)));
+
+      // If it was a tap (not a drag), start drop
+      if (!isDragging.current && deltaX < 10 && deltaY < 10) {
+        startDrop();
+      }
+
+      touchStartX.current = null;
+      touchStartY.current = null;
+      isDragging.current = false;
+    };
+
     window.addEventListener('keydown', handleKeyDown);
+
+    const gameWindow = gameWindowRef.current;
+    if (gameWindow) {
+      gameWindow.addEventListener('touchstart', handleTouchStart, { passive: false });
+      gameWindow.addEventListener('touchmove', handleTouchMove, { passive: false });
+      gameWindow.addEventListener('touchend', handleTouchEnd, { passive: false });
+    }
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      if (gameWindow) {
+        gameWindow.removeEventListener('touchstart', handleTouchStart);
+        gameWindow.removeEventListener('touchmove', handleTouchMove);
+        gameWindow.removeEventListener('touchend', handleTouchEnd);
+      }
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
